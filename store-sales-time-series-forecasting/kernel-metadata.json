@@ -1,0 +1,17 @@
+{
+  "id": "keewoongnam/store-sales-time-series-forecasting",
+  "id_no": 39509852,
+  "title": "store-sales-time-series-forecasting",
+  "code_file": "store-sales-time-series-forecasting.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": true,
+  "enable_gpu": false,
+  "enable_internet": true,
+  "keywords": [],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [
+    "competitions/store-sales-time-series-forecasting"
+  ]
+}
