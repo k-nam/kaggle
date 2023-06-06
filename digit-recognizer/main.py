@@ -13,6 +13,21 @@ from tensorflow.keras import layers
 from tensorflow.keras.models import Model
 from tensorflow.keras.models import Sequential
 import os
+import matplotlib.pyplot as plt
+
+def plot_model_history(model_history, metric, ylim=None):
+    plt.style.use('seaborn-darkgrid')
+    plotter = tensorflow_docs.plots.HistoryPlotter()
+    plotter.plot({'Model': model_history}, metric=metric)
+    plt.title(f'{metric.upper()}')
+    if ylim is None:
+        plt.ylim([0, 1])
+    else:
+        plt.ylim(ylim)
+
+    # plt.savefig(f'{metric}.png')
+    # plt.close()
+
 
 FILES_PATH = "./files/input"
 
@@ -20,14 +35,14 @@ print(os.environ.get("HW_ENV"))
 for dirname, _, filenames in os.walk(FILES_PATH):
     for filename in filenames:
         local = True
-        print(os.path.join(dirname, filename))
+        # print(os.path.join(dirname, filename))
 
 if not local:
     FILES_PATH = "/kaggle/input/digit-recognizer"
 
 train_set = pd.read_csv(f"{FILES_PATH}/train.csv")
 test_set = pd.read_csv(f"{FILES_PATH}/test.csv")
-test_set.describe()
+# test_set.describe()
 
 
 # %%
@@ -48,23 +63,22 @@ train_x, valid_x, train_y, valid_y = train_test_split(train_x, train_y, train_si
 train_x = train_x.reshape((train_x.shape[0], 28, 28, 1))
 test_x = test_x.reshape((test_x.shape[0], 28, 28, 1))
 valid_x = valid_x.reshape((valid_x.shape[0], 28, 28, 1))
-print(train_x.shape)
+# print(train_x.shape)
 
 # %%
 sequential_model = Sequential()
 sequential_model.add(layers.Input(shape=(28, 28, 1)))
-sequential_model.add(
-    layers.Conv2D(kernel_size=(2, 2), padding="same", strides=(2, 2), filters=32)
-)
-sequential_model.add(layers.ReLU())
-sequential_model.add(layers.BatchNormalization())
-sequential_model.add(
-    layers.MaxPooling2D(pool_size=(2, 2), strides=(1, 1), padding="same")
-)
-sequential_model.add(layers.Dropout(rate=0.5))
+
+# sequential_model.add(
+#     layers.Conv2D(kernel_size=(2, 2), padding="same", strides=(2, 2), filters=32))
+# sequential_model.add(layers.ReLU())
+# sequential_model.add(layers.BatchNormalization())
+# sequential_model.add(
+#     layers.MaxPooling2D(pool_size=(2, 2), strides=(1, 1), padding="same")
+# )
+# sequential_model.add(layers.Dropout(rate=0.5))
+
 sequential_model.add(layers.Flatten())
-
-
 sequential_model.add(layers.Dense(256, activation="sigmoid"))
 sequential_model.add(layers.Dense(128, activation="sigmoid"))
 sequential_model.add(layers.Dense(10, activation="softmax"))
@@ -73,14 +87,20 @@ sequential_model.summary()
 sequential_model.compile(
     loss="categorical_crossentropy", optimizer="adam", metrics=["accuracy"]
 )
-sequential_model.fit(
+history = sequential_model.fit(
     train_x,
     train_y,
     validation_data=(valid_x, valid_y),
-    epochs=5,
+    epochs=10,
     batch_size=256,
     verbose=0,
 )
+
+# %%
+
+# plot_model_history(history, 'loss', [0., 2.0])
+plot_model_history(history, 'accuracy')
+
 _, accuracy = sequential_model.evaluate(valid_x, valid_y, verbose=0)
 print(f"Accuracy:{accuracy}")
 
