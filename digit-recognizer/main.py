@@ -9,7 +9,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelBinarizer
 from tensorflow.keras import Input
 from tensorflow.keras.datasets import mnist
-from tensorflow.keras.layers import Dense
+from tensorflow.keras import layers
 from tensorflow.keras.models import Model
 from tensorflow.keras.models import Sequential
 import os
@@ -44,13 +44,31 @@ label_binarizer = LabelBinarizer()
 train_y = label_binarizer.fit_transform(train_y)
 
 train_x, valid_x, train_y, valid_y = train_test_split(train_x, train_y, train_size=0.8)
-train_x = train_x.reshape((train_x.shape[0], 28 * 28 * 1))
-valid_x = valid_x.reshape((valid_x.shape[0], 28 * 28 * 1))
 
+train_x = train_x.reshape((train_x.shape[0], 28, 28, 1))
+test_x = test_x.reshape((test_x.shape[0], 28, 28, 1))
+valid_x = valid_x.reshape((valid_x.shape[0], 28, 28, 1))
+print(train_x.shape)
+
+# %%
 sequential_model = Sequential()
-sequential_model.add(Dense(256, input_shape=(28 * 28 * 1,), activation="sigmoid"))
-sequential_model.add(Dense(128, activation="sigmoid"))
-sequential_model.add(Dense(10, activation="softmax"))
+sequential_model.add(layers.Input(shape=(28, 28, 1)))
+sequential_model.add(
+    layers.Conv2D(kernel_size=(2, 2), padding="same", strides=(2, 2), filters=32)
+)
+sequential_model.add(layers.ReLU())
+sequential_model.add(layers.BatchNormalization())
+sequential_model.add(
+    layers.MaxPooling2D(pool_size=(2, 2), strides=(1, 1), padding="same")
+)
+sequential_model.add(layers.Dropout(rate=0.5))
+sequential_model.add(layers.Flatten())
+
+
+sequential_model.add(layers.Dense(256, activation="sigmoid"))
+sequential_model.add(layers.Dense(128, activation="sigmoid"))
+sequential_model.add(layers.Dense(10, activation="softmax"))
+sequential_model.summary()
 
 sequential_model.compile(
     loss="categorical_crossentropy", optimizer="adam", metrics=["accuracy"]
@@ -59,7 +77,7 @@ sequential_model.fit(
     train_x,
     train_y,
     validation_data=(valid_x, valid_y),
-    epochs=50,
+    epochs=5,
     batch_size=256,
     verbose=0,
 )
