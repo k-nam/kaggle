@@ -13,9 +13,12 @@ from tensorflow.keras import layers
 from tensorflow.keras.models import Model
 from tensorflow.keras.models import Sequential
 import os
-
+import tensorflow as tf
 from mylib import plot_model_history
 
+print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
+
+# %%
 FILES_PATH = "./files/input"
 
 print(os.environ.get("HW_ENV"))
