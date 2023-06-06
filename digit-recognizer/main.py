@@ -13,21 +13,8 @@ from tensorflow.keras import layers
 from tensorflow.keras.models import Model
 from tensorflow.keras.models import Sequential
 import os
-import matplotlib.pyplot as plt
 
-def plot_model_history(model_history, metric, ylim=None):
-    plt.style.use('seaborn-darkgrid')
-    plotter = tensorflow_docs.plots.HistoryPlotter()
-    plotter.plot({'Model': model_history}, metric=metric)
-    plt.title(f'{metric.upper()}')
-    if ylim is None:
-        plt.ylim([0, 1])
-    else:
-        plt.ylim(ylim)
-
-    # plt.savefig(f'{metric}.png')
-    # plt.close()
-
+from mylib import plot_model_history
 
 FILES_PATH = "./files/input"
 
@@ -44,8 +31,6 @@ train_set = pd.read_csv(f"{FILES_PATH}/train.csv")
 test_set = pd.read_csv(f"{FILES_PATH}/test.csv")
 # test_set.describe()
 
-
-# %%
 train_x, train_y = train_set.iloc[:, 1:], train_set.iloc[:, :1]
 
 train_x = train_x.to_numpy()
@@ -65,7 +50,6 @@ test_x = test_x.reshape((test_x.shape[0], 28, 28, 1))
 valid_x = valid_x.reshape((valid_x.shape[0], 28, 28, 1))
 # print(train_x.shape)
 
-# %%
 sequential_model = Sequential()
 sequential_model.add(layers.Input(shape=(28, 28, 1)))
 
@@ -96,11 +80,10 @@ history = sequential_model.fit(
     verbose=0,
 )
 
-# %%
-
 # plot_model_history(history, 'loss', [0., 2.0])
 plot_model_history(history, 'accuracy')
 
+# %%
 _, accuracy = sequential_model.evaluate(valid_x, valid_y, verbose=0)
 print(f"Accuracy:{accuracy}")
 
