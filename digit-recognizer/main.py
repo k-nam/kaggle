@@ -53,17 +53,17 @@ valid_x = valid_x.reshape((valid_x.shape[0], 28, 28, 1))
 sequential_model = Sequential()
 sequential_model.add(layers.Input(shape=(28, 28, 1)))
 
-# sequential_model.add(
-#     layers.Conv2D(kernel_size=(2, 2), padding="same", strides=(2, 2), filters=32))
-# sequential_model.add(layers.ReLU())
-# sequential_model.add(layers.BatchNormalization())
-# sequential_model.add(
-#     layers.MaxPooling2D(pool_size=(2, 2), strides=(1, 1), padding="same")
-# )
-# sequential_model.add(layers.Dropout(rate=0.5))
+sequential_model.add(
+    layers.Conv2D(kernel_size=(3, 3), padding="same", strides=(2, 2), filters=16))
+sequential_model.add(layers.ReLU())
+sequential_model.add(layers.BatchNormalization())
+sequential_model.add(
+    layers.MaxPooling2D(pool_size=(2, 2), strides=(1, 1), padding="same")
+)
+sequential_model.add(layers.Dropout(rate=0.5))
 
 sequential_model.add(layers.Flatten())
-sequential_model.add(layers.Dense(256, activation="sigmoid"))
+# sequential_model.add(layers.Dense(256, activation="sigmoid"))
 sequential_model.add(layers.Dense(128, activation="sigmoid"))
 sequential_model.add(layers.Dense(10, activation="softmax"))
 sequential_model.summary()

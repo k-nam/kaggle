@@ -1,3 +1,5 @@
-set -eu
+set -eux
 
-poetry run kaggle competitions submit -f $1/answer.csv -m '$2' $1
+COMPETITION=$1
+MSG=$2
+poetry run kaggle competitions submit -f $COMPETITION/answer.csv -m "$MSG" $COMPETITION
